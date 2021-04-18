@@ -68,7 +68,6 @@ def print_game_board():
 
 def do_some_magic(z, y, x, dz, dy, dx):
 
-  # TODO: rewrite this file to a class
   global line_home, line_away
 
   total = 0
