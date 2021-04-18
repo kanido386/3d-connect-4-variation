@@ -66,6 +66,29 @@ def print_game_board():
 
 
 
+def do_some_magic(z, y, x, dz, dy, dx):
+  total = 0
+  for i in range(4):
+    c = 6 * y + x
+    if not is_the_actual_cell(c):
+      continue
+    total += game_board[z][y][x]
+    z += dz
+    y += dy
+    x += dx
+  return total
+
+
+
+def is_the_actual_cell(c):
+  cell = map_36_to_24[c]
+  if cell == 0:   # not the actual cell
+    return False
+  else:
+    return True
+
+
+
 def count_point():
 
   # TODO: rewrite this file to a class
@@ -73,27 +96,161 @@ def count_point():
 
   # check the same cell
   for c in range(36):
-    cell = map_36_to_24[c]
-    if cell == 0:   # not the actual cell
+    if not is_the_actual_cell(c):
       continue
     x = c % 6
     y = c // 6
     for i in range(3):
-      if game_board[i][y][x] + game_board[i+1][y][x] + game_board[i+2][y][x] + game_board[i+3][y][x] == 4:
+      # if game_board[i][y][x] + game_board[i+1][y][x] + game_board[i+2][y][x] + game_board[i+3][y][x] == 4:
+      if do_some_magic(i, y, x, 1, 0, 0) == 4:
         line_home += 1
-      elif game_board[i][y][x] + game_board[i+1][y][x] + game_board[i+2][y][x] + game_board[i+3][y][x] == -4:
+      # elif game_board[i][y][x] + game_board[i+1][y][x] + game_board[i+2][y][x] + game_board[i+3][y][x] == -4:
+      elif do_some_magic(i, y, x, 1, 0, 0) == -4:
         line_away += 1
 
-  # TODO: add other direction
+  # check horizontal
+  for c in range(36):
+    if not is_the_actual_cell(c):
+      continue
+    x = c % 6
+    y = c // 6
+    if x > 2:
+      continue
+    for i in range(6):
+      if do_some_magic(i, y, x, 0, 0, 1) == 4:
+        line_home += 1
+      elif do_some_magic(i, y, x, 0, 0, 1) == -4:
+        line_away += 1
+
+  # check vertical
+  for c in range(36):
+    if not is_the_actual_cell(c):
+      continue
+    x = c % 6
+    y = c // 6
+    if y > 2:
+      continue
+    for i in range(6):
+      if do_some_magic(i, y, x, 0, 1, 0) == 4:
+        line_home += 1
+      elif do_some_magic(i, y, x, 0, 1, 0) == -4:
+        line_away += 1
+
+  # check diagonal (same z)
+  for c in range(36):
+    if not is_the_actual_cell(c):
+      continue
+    x = c % 6
+    y = c // 6
+    if y > 2:
+      continue
+    for i in range(6):
+      if x <= 2:
+        if do_some_magic(i, y, x, 0, 1, 1) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, 0, 1, 1) == -4:
+          line_away += 1
+      else:
+        if do_some_magic(i, y, x, 0, 1, -1) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, 0, 1, -1) == -4:
+          line_away += 1
+
+  # check diagonal (same y)
+  for c in range(36):
+    if not is_the_actual_cell(c):
+      continue
+    x = c % 6
+    y = c // 6
+    for i in range(3, 6):   # 3, 4, 5
+      if x <= 2:
+        if do_some_magic(i, y, x, -1, 0, 1) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, -1, 0, 1) == -4:
+          line_away += 1
+      else:
+        if do_some_magic(i, y, x, -1, 0, -1) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, -1, 0, -1) == -4:
+          line_away += 1
+
+  # check diagonal (same x)
+  for c in range(36):
+    if not is_the_actual_cell(c):
+      continue
+    x = c % 6
+    y = c // 6
+    for i in range(3, 6):   # 3, 4, 5
+      if y <= 2:
+        if do_some_magic(i, y, x, -1, 1, 0) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, -1, 1, 0) == -4:
+          line_away += 1
+      else:
+        if do_some_magic(i, y, x, -1, -1, 0) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, -1, -1, 0) == -4:
+          line_away += 1
+
+  # check diagonal (all different)
+  for c in range(36):
+    if not is_the_actual_cell(c):
+      continue
+    x = c % 6
+    y = c // 6
+    if y > 2:
+      continue
+    for i in range(3):
+      if x <= 2:
+        if do_some_magic(i, y, x, 1, 1, 1) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, 1, 1, 1) == -4:
+          line_away += 1
+      else:
+        if do_some_magic(i, y, x, 1, 1, -1) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, 1, 1, -1) == -4:
+          line_away += 1
+    for i in range(3, 6):
+      if x <= 2:
+        if do_some_magic(i, y, x, -1, 1, 1) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, -1, 1, 1) == -4:
+          line_away += 1
+      else:
+        if do_some_magic(i, y, x, -1, 1, -1) == 4:
+          line_home += 1
+        elif do_some_magic(i, y, x, -1, 1, -1) == -4:
+          line_away += 1
 
 
+# test the same cell
+# move(-1, 5), move(1, 5), move(1, 5), move(1, 5), move(1, 5), move(1, 5)
 
-move(-1, 5)
-move(1, 5)
-move(1, 5)
-move(1, 5)
-move(1, 5)
-move(1, 5)
+# test horizontal
+# move(-1, 15), move(-1, 16), move(-1, 17), move(-1, 18)
+# move(1, 15), move(1, 16), move(1, 17), move(1, 18)
+
+# test vertical
+# move(-1, 9), move(-1, 15), move(-1, 20), move(-1, 23)
+# move(1, 9), move(1, 15), move(1, 20), move(1, 23)
+
+# test diagonal (same z)
+# move(-1, 3), move(-1, 9), move(-1, 16), move(-1, 22)
+# move(1, 6), move(1, 10), move(1, 15), move(1, 19)
+
+# test diagonal (same y)
+# move(1, 8), move(-1, 9), move(1, 9), move(1, 10), move(-1, 10)
+# move(1, 10), move(-1, 11), move(-1, 11), move(-1, 11), move(1, 11)
+
+# test diagonal (same x)
+# move(1, 6), move(-1, 11), move(1, 11), move(1, 17), move(-1, 17)
+# move(1, 17), move(-1, 22), move(-1, 22), move(-1, 22), move(1, 22)
+
+# test diagonal (all different)
+move(1, 6), move(-1, 10), move(1, 10), move(1, 15), move(-1, 15)
+move(1, 15), move(-1, 19), move(-1, 19), move(-1, 19), move(1, 19)
+
 
 # print_game_board()
 
