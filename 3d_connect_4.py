@@ -9,8 +9,9 @@ class Board():
     self.line_away = 0
 
     # define players
-    self.player_home = 1
-    self.player_away = -1
+    self.current_player = 1
+    # self.player_home = 1
+    # self.player_away = -1
 
     self.map_24_to_36 = {
       1:  2,    2:  3,    3:  7,    4:  8,    5:  9,
@@ -42,7 +43,7 @@ class Board():
       self.__dict__ = deepcopy(board.__dict__)
 
 
-  def move(self, who, cell):
+  def move(self, cell):
     # create new board instance that inherits from the current state
     board = Board(self)
 
@@ -55,12 +56,25 @@ class Board():
     y = c // 6
     for i in range(6):
       if board.game_board[i][y][x] == 0:
-        board.game_board[i][y][x] = who
+        board.game_board[i][y][x] = self.current_player
         if i == 5:
           board.valid[c] = 0  # full
         break
+
+    # change player
+    board.current_player *= -1
     
     return board
+
+
+  def generate_states(self):
+    # list of available actions to consider
+    actions = []
+    for cell in range(1, 25):   # cell 1~24
+      c = self.map_24_to_36[cell]
+      if self.valid[c] != 0:    # not full
+        actions.append(self.move(cell))
+    return actions
 
 
   def is_the_actual_cell(self, c):
@@ -200,15 +214,13 @@ if __name__ == '__main__':
   total_home = 0
   total_away = 0
   
-  for i in range(300):
+  for i in range(30):
     board = Board()
     # print(board.__dict__)
 
-    player = -1
     for i in range(64):
       cell = random.randint(1, 24)
-      board = board.move(player, cell)
-      player *= -1
+      board = board.move(cell)
     # board.print_game_board()
     board.count_point()
     # print(board.line_home, board.line_away)
@@ -216,3 +228,11 @@ if __name__ == '__main__':
     total_away += board.line_away
 
   print(total_home, total_away)
+
+  # ==============================
+
+  board = Board()
+  actions = board.generate_states()
+  for action in actions:
+    action.print_game_board()
+    print('**************************************************')
