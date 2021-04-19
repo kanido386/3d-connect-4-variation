@@ -77,6 +77,13 @@ class Board():
     return actions
 
 
+  def game_loop(self):
+    while True:
+      input_cell = int(input(f'player {self.current_player}: '))
+      self = self.move(input_cell)
+      self.print_game_board()
+
+
   def is_the_actual_cell(self, c):
     cell = self.map_36_to_24[c]
     if cell == 0:   # not the actual cell
@@ -236,3 +243,8 @@ if __name__ == '__main__':
   for action in actions:
     action.print_game_board()
     print('**************************************************')
+
+  # ==============================
+
+  board = Board()
+  board.game_loop()
