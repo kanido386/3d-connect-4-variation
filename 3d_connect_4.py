@@ -1,5 +1,6 @@
 from copy import deepcopy
 import random
+from mcts import *
 
 class Board():
 
@@ -10,6 +11,7 @@ class Board():
 
     # define players
     self.current_player = 1
+    self.round = 1
     # self.player_home = 1
     # self.player_away = -1
 
@@ -63,6 +65,7 @@ class Board():
 
     # change player
     board.current_player *= -1
+    board.round += 1
     
     return board
 
@@ -79,6 +82,7 @@ class Board():
 
   def game_loop(self):
     while True:
+      print(f'round {self.round}')
       input_cell = int(input(f'player {self.current_player}: '))
       self = self.move(input_cell)
       self.print_game_board()
@@ -238,13 +242,18 @@ if __name__ == '__main__':
 
   # ==============================
 
-  board = Board()
-  actions = board.generate_states()
-  for action in actions:
-    action.print_game_board()
-    print('**************************************************')
+  # # test generate_states()
+  # board = Board()
+  # actions = board.generate_states()
+  # for action in actions:
+  #   action.print_game_board()
+  #   print('**************************************************')
 
   # ==============================
 
   board = Board()
-  board.game_loop()
+  # board.game_loop()
+  root = TreeNode(board, None)
+  root.children['test'] = TreeNode(board.move(11), root)
+  print(root.__dict__)
+  print(root.children['test'].__dict__)
