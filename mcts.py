@@ -9,7 +9,7 @@ class TreeNode():
     self.is_terminal = (self.board.round == 64)
     self.is_fully_expanded = self.is_terminal
     self.parent = parent
-    self.visit = 0
+    self.visits = 0
     self.score = 0
     self.children = {}
 
@@ -44,4 +44,24 @@ class MCTS():
 
   # select the best node based on UCB1 formula
   def get_best_move(self, node, exploration_constant):
-    pass
+    # TODO: 可能會有 bug，畢竟有正反方！
+    best_score = float('-inf')
+    best_moves = []
+
+    for child_node in node.children.values():
+      # get move score using UCT (Upper Confidence Bounds to Trees) formula
+      current_player = child_node.board.current_player
+      # TODO: 可能會有 bug，畢竟有正反方！
+      move_score = current_player * child_node.score / child_node.visits + \
+        exploration_constant * math.sqrt(math.log(node.visits / child_node.visits))
+
+      # better move has been found
+      if move_score > best_score:
+        best_score = move_score
+        best_moves = [child_node]
+      # found as good move as already available
+      elif move_score == best_score:
+        best_moves.append(child_node)
+
+    # return one of the best moves randomly
+    return random.choice(best_moves)
