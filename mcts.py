@@ -29,7 +29,12 @@ class MCTS():
 
   # select most promising node
   def select(self, node):
-    pass
+    while not node.is_terminal:
+      if node.is_fully_expanded:
+        node = self.get_best_move(node, 2)
+      else:
+        node = self.expand(node)
+    return node
 
 
   # simulate the game via random moves until reaching the end of the game
