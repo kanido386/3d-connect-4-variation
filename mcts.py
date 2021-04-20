@@ -37,6 +37,19 @@ class MCTS():
     return node
 
 
+  def expand(self, node):
+    states = node.board.generate_states()
+    for state in states:
+      # make sure that the current state is not present in child nodes
+      if str(state.game_board) not in node.children:
+        new_node = TreeNode(state, node)
+        node.children[str(state.game_board)] = new_node
+        # when node is fully expanded
+        if len(states) == len(node.children):
+          node.is_fully_expanded = True
+        return new_node
+
+
   # simulate the game via random moves until reaching the end of the game
   def rollout(self, board):
     pass
