@@ -6,8 +6,8 @@ class Board():
 
   def __init__(self, board=None):
 
-    self.line_home = 0
-    self.line_away = 0
+    # the order of players connect a line
+    self.line_order = []
 
     # define players
     self.current_player = 1
@@ -43,6 +43,12 @@ class Board():
     # create a copy of previous board state if available
     if board is not None:
       self.__dict__ = deepcopy(board.__dict__)
+
+    # put here to prevent count_point() bug
+    self.line_home = 0
+    self.line_away = 0
+    self.score_home = 0
+    self.score_away = 0
 
 
   def move(self, cell):
@@ -98,20 +104,56 @@ class Board():
 
   def do_some_magic(self, z, y, x, dz, dy, dx):
 
+    # print(self.current_player)
+
+    first_flag = True
+    first_position = 0
+
     total = 0
     for i in range(4):
       c = 6 * y + x
+
+      # never happen
       if not self.is_the_actual_cell(c):
-        continue
+        return
+      # record the first one
+      if first_flag:
+        first_position = self.game_board[z][y][x]
+        first_flag = False
+      # means never forms a line
+      if self.game_board[z][y][x] == -first_position:
+        return
+        
       total += self.game_board[z][y][x]
+      # print('here')
       z += dz
       y += dy
       x += dx
     # return total
+
+    # print(total)
+
+    if first_position == 1:
+      self.score_home += total
+    elif first_position == -1:
+      self.score_away += (-total)
+
+    # TODO: may have bug
+    # print(total)
+    # if self.current_player == 1:
+    #   self.score_home += total
+    # elif self.current_player == -1:
+    #   self.score_away += (-total)
+
+    # form a line!
     if total == 4:
       self.line_home += 1
+      # TODO: 更改參數
+      self.score_home += 30
     elif total == -4:
       self.line_away += 1
+      # TODO: 更改參數
+      self.score_away += 30
 
 
   def count_point(self):
@@ -222,23 +264,25 @@ class Board():
 
 if __name__ == '__main__':
 
-  total_home = 0
-  total_away = 0
+  # total_home = 0
+  # total_away = 0
   
-  for i in range(30):
-    board = Board()
-    # print(board.__dict__)
+  # for i in range(1):
+  #   board = Board()
+  #   # print(board.__dict__)
 
-    for i in range(64):
-      cell = random.randint(1, 24)
-      board = board.move(cell)
-    # board.print_game_board()
-    board.count_point()
-    # print(board.line_home, board.line_away)
-    total_home += board.line_home
-    total_away += board.line_away
+  #   for i in range(64):
+  #     # cell = random.randint(1, 24)
+  #     # board = board.move(cell)
+  #     board = random.choice(board.generate_states())
+    
+  #   board.print_game_board()
+  #   board.count_point()
+  #   # print(board.line_home, board.line_away)
+  #   total_home += board.line_home
+  #   total_away += board.line_away
 
-  print(total_home, total_away)
+  # print(total_home, total_away)
 
   # ==============================
 
@@ -253,7 +297,10 @@ if __name__ == '__main__':
 
   board = Board()
   # board.game_loop()
-  root = TreeNode(board, None)
-  root.children['test'] = TreeNode(board.move(11), root)
-  print(root.__dict__)
-  print(root.children['test'].__dict__)
+  # root = TreeNode(board, None)
+  # root.children['test'] = TreeNode(board.move(11), root)
+  # print(root.__dict__)
+  # print(root.children['test'].__dict__)
+
+  mcts = MCTS()
+  mcts.rollout(board)

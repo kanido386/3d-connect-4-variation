@@ -39,7 +39,7 @@ class MCTS():
 
   def expand(self, node):
     states = node.board.generate_states()
-    for state in states:
+    for state in states: 
       # make sure that the current state is not present in child nodes
       if str(state.game_board) not in node.children:
         new_node = TreeNode(state, node)
@@ -52,7 +52,36 @@ class MCTS():
 
   # simulate the game via random moves until reaching the end of the game
   def rollout(self, board):
-    pass
+    line_home_previous = 0
+    line_away_previous = 0
+    while board.round <= 64:
+      # board = random.choice(board.generate_states())
+      r = random.randint(0, len(board.generate_states())-1)
+      board = board.generate_states()[r]
+      # board.print_game_board()
+      board.count_point()
+
+      if board.line_home > line_home_previous:
+        new_line_number = board.line_home - line_home_previous
+        while new_line_number > 0:
+          board.line_order.append(1)
+          new_line_number -= 1
+        line_home_previous = board.line_home
+      elif board.line_away > line_away_previous:
+        new_line_number = board.line_away - line_away_previous
+        while new_line_number > 0:
+          board.line_order.append(-1)
+          new_line_number -= 1
+        line_away_previous = board.line_away
+
+      print(board.line_home, board.line_away)
+      print(board.score_home, board.score_away)
+      print('==============================')
+    print(board.line_home, board.line_away)
+    print(board.score_home, board.score_away)
+    print(board.line_order)
+    # TODO:
+    return 
 
 
   # backpropagate the number of visits and score up to the root node
@@ -82,4 +111,5 @@ class MCTS():
         best_moves.append(child_node)
 
     # return one of the best moves randomly
+    # TODO: not sure it's really random or not
     return random.choice(best_moves)
