@@ -119,9 +119,10 @@ class Board():
       # record the first one
       if first_flag:
         first_position = self.game_board[z][y][x]
-        first_flag = False
+        if first_position != 0:
+          first_flag = False
       # means never forms a line
-      if self.game_board[z][y][x] == -first_position:
+      if not first_flag and self.game_board[z][y][x] == -first_position:
         return
         
       total += self.game_board[z][y][x]
@@ -137,6 +138,8 @@ class Board():
       self.score_home += total
     elif first_position == -1:
       self.score_away += (-total)
+
+    # print(total)
 
     # TODO: may have bug
     # print(total)
@@ -261,6 +264,16 @@ class Board():
         self.valid[c] = 1
 
 
+  # TODO:
+  def naive_approach(self):
+    maximum = float('-inf')
+    for i in range(1, 25):  # cell 1~24
+      board = self.move(i)
+      board.count_point()
+      # board.print_game_board()
+      print(i, board.score_home, board.score_away)
+
+
 
 if __name__ == '__main__':
 
@@ -303,4 +316,16 @@ if __name__ == '__main__':
   # print(root.children['test'].__dict__)
 
   mcts = MCTS()
-  mcts.rollout(board)
+
+  board.naive_approach()
+
+  # i = 1
+
+  # # loop to play AI vs AI
+  # while True:
+  #   best_move = mcts.search(board)
+  #   board = best_move.board
+  #   board.print_game_board()
+  #   print(f'**************** {i} **************')
+    
+  #   i += 1

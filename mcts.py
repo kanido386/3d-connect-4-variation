@@ -19,12 +19,13 @@ class MCTS():
   def search(self, initial_state):
     self.root = TreeNode(initial_state, None)
 
-    for iteration in range(300):
+    # TODO: modify iteration number (the larger, the better, but slower)
+    for iteration in range(5):
       node = self.select(self.root)     # select a node (selection phase)
       score = self.rollout(node.board)  # score current node (simulation phase)
       self.backpropagate(node, score)
     
-    return get_best_move(self.root, 0)
+    return self.get_best_move(self.root, 0)
 
 
   # select most promising node
@@ -74,19 +75,27 @@ class MCTS():
           new_line_number -= 1
         line_away_previous = board.line_away
 
-      print(board.line_home, board.line_away)
-      print(board.score_home, board.score_away)
-      print('==============================')
-    print(board.line_home, board.line_away)
-    print(board.score_home, board.score_away)
-    print(board.line_order)
+    #   print(board.line_home, board.line_away)
+    #   print(board.score_home, board.score_away)
+    #   print('==============================')
+    # print(board.line_home, board.line_away)
+    # print(board.score_home, board.score_away)
+    # print(board.line_order)
     # TODO:
-    return 
+    if board.current_player == 1:
+      return board.score_home - board.score_away
+    elif board.current_player == -1:
+      return board.score_away - board.score_home
 
 
   # backpropagate the number of visits and score up to the root node
   def backpropagate(self, node, score):
-    pass
+    # update nodes up to root node
+    while node is not None:
+      node.visits += 1
+      node.score += score
+      node = node.parent
+
 
 
   # select the best node based on UCB1 formula
