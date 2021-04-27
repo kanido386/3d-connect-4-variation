@@ -267,11 +267,27 @@ class Board():
   # TODO:
   def naive_approach(self):
     maximum = float('-inf')
+    the_cell = 0
+    the_board = None
     for i in range(1, 25):  # cell 1~24
+
+      c = self.map_24_to_36[i]
+      if self.valid[c] == 0:    # full
+        continue
+
       board = self.move(i)
       board.count_point()
       # board.print_game_board()
-      print(i, board.score_home, board.score_away)
+      temp = abs(board.score_home - board.score_away)
+      if temp > maximum:
+        maximum = temp
+        the_cell = i
+        the_board = board
+    #   print(i, board.score_home, board.score_away)
+    # print('==============================')
+    # print(the_cell, maximum, the_board)
+    print(the_board.score_home, the_board.score_away)
+    return the_board
 
 
 
@@ -317,7 +333,15 @@ if __name__ == '__main__':
 
   mcts = MCTS()
 
-  board.naive_approach()
+  i = 1
+
+  # loop to play AI vs AI
+  while i <= 64:
+    board = board.naive_approach()
+    # board.print_game_board()
+    print(f'**************** {i} **************')
+    
+    i += 1
 
   # i = 1
 
@@ -325,7 +349,9 @@ if __name__ == '__main__':
   # while True:
   #   best_move = mcts.search(board)
   #   board = best_move.board
-  #   board.print_game_board()
+  #   board.count_point()
+  #   # board.print_game_board()
+  #   print(board.score_home, board.score_away)
   #   print(f'**************** {i} **************')
     
   #   i += 1
