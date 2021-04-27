@@ -82,7 +82,9 @@ class Board():
     for cell in range(1, 25):   # cell 1~24
       c = self.map_24_to_36[cell]
       if self.valid[c] != 0:    # not full
-        actions.append(self.move(cell))
+        # TODO: wow
+        # actions.append(self.move(cell))
+        actions.append((cell, self.move(cell)))
     return actions
 
 
@@ -286,7 +288,9 @@ class Board():
     #   print(i, board.score_home, board.score_away)
     # print('==============================')
     # print(the_cell, maximum, the_board)
-    print(the_board.score_home, the_board.score_away)
+
+    print(the_cell)
+
     return the_board
 
 
@@ -333,25 +337,28 @@ if __name__ == '__main__':
 
   mcts = MCTS()
 
-  i = 1
-
-  # loop to play AI vs AI
-  while i <= 64:
-    board = board.naive_approach()
-    # board.print_game_board()
-    print(f'**************** {i} **************')
-    
-    i += 1
-
   # i = 1
 
   # # loop to play AI vs AI
-  # while True:
-  #   best_move = mcts.search(board)
-  #   board = best_move.board
-  #   board.count_point()
+  # while i <= 64:
+  #   board = board.naive_approach()
   #   # board.print_game_board()
   #   print(board.score_home, board.score_away)
+  #   print(board.line_home, board.line_away)
   #   print(f'**************** {i} **************')
     
   #   i += 1
+
+  i = 1
+
+  # loop to play AI vs AI
+  while True:
+    best_move = mcts.search(board)
+    board = best_move.board
+    board.count_point()
+    # board.print_game_board()
+    print(board.score_home, board.score_away)
+    print(board.line_home, board.line_away)
+    print(f'**************** {i} **************')
+    
+    i += 1

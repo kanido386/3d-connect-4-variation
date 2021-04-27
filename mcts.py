@@ -3,12 +3,16 @@ import random
 
 class TreeNode():
 
-  def __init__(self, board, parent):
+  # TODO: wow
+  # def __init__(self, board, parent):
+  def __init__(self, board, parent, cell):
     self.board = board
     # the depth of the game is 64 moves in total
     self.is_terminal = (self.board.round == 64)
     self.is_fully_expanded = self.is_terminal
     self.parent = parent
+    # TODO: wow
+    self.cell = cell
     self.visits = 0
     self.score = 0
     self.children = {}
@@ -17,10 +21,16 @@ class MCTS():
   
   # search for the best move in the current position
   def search(self, initial_state):
-    self.root = TreeNode(initial_state, None)
+
+    # if initial_state.round == 1:
+    #   the_node = TreeNode(initial_state.move(15), None, 15)
+    #   print(15)
+    #   return the_node
+
+    self.root = TreeNode(initial_state, None, None)
 
     # TODO: modify iteration number (the larger, the better, but slower)
-    for iteration in range(5):
+    for iteration in range(1):
       node = self.select(self.root)     # select a node (selection phase)
       score = self.rollout(node.board)  # score current node (simulation phase)
       self.backpropagate(node, score)
@@ -40,10 +50,14 @@ class MCTS():
 
   def expand(self, node):
     states = node.board.generate_states()
-    for state in states: 
+    # TODO: wow
+    # for state in states:
+    for cell, state in states:
       # make sure that the current state is not present in child nodes
       if str(state.game_board) not in node.children:
-        new_node = TreeNode(state, node)
+        # TODO: wow
+        # new_node = TreeNode(state, node)
+        new_node = TreeNode(state, node, cell)
         node.children[str(state.game_board)] = new_node
         # when node is fully expanded
         if len(states) == len(node.children):
@@ -55,10 +69,12 @@ class MCTS():
   def rollout(self, board):
     line_home_previous = 0
     line_away_previous = 0
-    while board.round <= 64:
+    while board.round < 64:
       # board = random.choice(board.generate_states())
       r = random.randint(0, len(board.generate_states())-1)
-      board = board.generate_states()[r]
+      # TODO: wow
+      # board = board.generate_states()[r]
+      cell, board = board.generate_states()[r]
       # board.print_game_board()
       board.count_point()
 
@@ -113,6 +129,7 @@ class MCTS():
 
       # better move has been found
       if move_score > best_score:
+        # print(child_node)
         best_score = move_score
         best_moves = [child_node]
       # found as good move as already available
@@ -121,4 +138,12 @@ class MCTS():
 
     # return one of the best moves randomly
     # TODO: not sure it's really random or not
-    return random.choice(best_moves)
+    # the_node = random.choice(best_moves)
+    length = len(best_moves)
+    if length > 1:
+      r = random.randint(0, length-1)
+    else:
+      r = 0
+    the_node = best_moves[r]
+    print(the_node.cell)
+    return the_node
