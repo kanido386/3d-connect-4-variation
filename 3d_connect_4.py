@@ -1,6 +1,9 @@
 from copy import deepcopy
 import random
-from mcts import *
+
+# TODO:
+# from mcts import *
+from mcts_with_timer import *
 
 class Board():
 
