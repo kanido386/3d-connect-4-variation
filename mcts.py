@@ -8,7 +8,7 @@ class TreeNode():
   def __init__(self, board, parent, cell):
     self.board = board
     # the depth of the game is 64 moves in total
-    self.is_terminal = (self.board.round == 64)
+    self.is_terminal = (self.board.round > 64)
     self.is_fully_expanded = self.is_terminal
     self.parent = parent
     # TODO: wow
@@ -27,10 +27,15 @@ class MCTS():
     #   print(15)
     #   return the_node
 
+    # if initial_state.round == 64:
+    #   the_node = TreeNode(initial_state.move(11), None, 11)
+    #   print(11)
+    #   return the_node
+
     self.root = TreeNode(initial_state, None, None)
 
     # TODO: modify iteration number (the larger, the better, but slower)
-    for iteration in range(1):
+    for iteration in range(11):
       node = self.select(self.root)     # select a node (selection phase)
       score = self.rollout(node.board)  # score current node (simulation phase)
       self.backpropagate(node, score)
@@ -122,9 +127,12 @@ class MCTS():
 
     for child_node in node.children.values():
       # get move score using UCT (Upper Confidence Bounds to Trees) formula
-      current_player = child_node.board.current_player
+      # TODO: 暫時先註解掉下面那一行，應該用不到
+      # current_player = child_node.board.current_player
       # TODO: 可能會有 bug，畢竟有正反方！
-      move_score = current_player * child_node.score / child_node.visits + \
+      # move_score = current_player * child_node.score / child_node.visits + \
+      #   exploration_constant * math.sqrt(math.log(node.visits / child_node.visits))
+      move_score = child_node.score / child_node.visits + \
         exploration_constant * math.sqrt(math.log(node.visits / child_node.visits))
 
       # better move has been found

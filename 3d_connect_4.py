@@ -352,7 +352,7 @@ if __name__ == '__main__':
   i = 1
 
   # loop to play AI vs AI
-  while True:
+  while board.round <= 64:
     best_move = mcts.search(board)
     board = best_move.board
     board.count_point()
