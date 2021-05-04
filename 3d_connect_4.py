@@ -1,7 +1,7 @@
 from copy import deepcopy
 import random
 
-# TODO:
+# FIXME:
 # from mcts import *
 from mcts_with_timer import *
 
@@ -59,8 +59,8 @@ class Board():
     board = Board(self)
 
     c = self.map_24_to_36[cell]
-    if not board.valid[c]:    # test whether the cell is full or not
-      # TODO:
+    if not board.valid[c]:    # the cell is full
+      # FIXME:
       # print('FULL!')
       return self
     x = c % 6
@@ -85,7 +85,7 @@ class Board():
     for cell in range(1, 25):   # cell 1~24
       c = self.map_24_to_36[cell]
       if self.valid[c] != 0:    # not full
-        # TODO: wow
+        # FIXME: wow
         # actions.append(self.move(cell))
         actions.append((cell, self.move(cell)))
     return actions
@@ -146,7 +146,7 @@ class Board():
 
     # print(total)
 
-    # TODO: may have bug
+    # FIXME: may have bug
     # print(total)
     # if self.current_player == 1:
     #   self.score_home += total
@@ -269,7 +269,7 @@ class Board():
         self.valid[c] = 1
 
 
-  # TODO:
+  # FIXME:
   def naive_approach(self):
     maximum = float('-inf')
     the_cell = 0

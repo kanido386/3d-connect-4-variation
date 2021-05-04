@@ -4,7 +4,7 @@ import time
 
 class TreeNode():
 
-  # TODO: wow
+  # FIXME: wow
   # def __init__(self, board, parent):
   def __init__(self, board, parent, cell):
     self.board = board
@@ -12,7 +12,7 @@ class TreeNode():
     self.is_terminal = (self.board.round > 64)
     self.is_fully_expanded = self.is_terminal
     self.parent = parent
-    # TODO: wow
+    # FIXME: wow
     self.cell = cell
     self.visits = 0
     self.score = 0
@@ -70,12 +70,12 @@ class MCTS():
 
   def expand(self, node):
     states = node.board.generate_states()
-    # TODO: wow
+    # FIXME: wow
     # for state in states:
     for cell, state in states:
       # make sure that the current state is not present in child nodes
       if str(state.game_board) not in node.children:
-        # TODO: wow
+        # FIXME: wow
         # new_node = TreeNode(state, node)
         new_node = TreeNode(state, node, cell)
         node.children[str(state.game_board)] = new_node
@@ -92,7 +92,7 @@ class MCTS():
     while board.round < 64:
       # board = random.choice(board.generate_states())
       r = random.randint(0, len(board.generate_states())-1)
-      # TODO: wow
+      # FIXME: wow
       # board = board.generate_states()[r]
       cell, board = board.generate_states()[r]
       # board.print_game_board()
@@ -117,7 +117,7 @@ class MCTS():
     # print(board.line_home, board.line_away)
     # print(board.score_home, board.score_away)
     # print(board.line_order)
-    # TODO:
+    # FIXME:
     if board.current_player == 1:
       return board.score_home - board.score_away
     elif board.current_player == -1:
@@ -136,15 +136,15 @@ class MCTS():
 
   # select the best node based on UCB1 formula
   def get_best_move(self, node, exploration_constant):
-    # TODO: 可能會有 bug，畢竟有正反方！
+    # FIXME: 可能會有 bug，畢竟有正反方！
     best_score = float('-inf')
     best_moves = []
 
     for child_node in node.children.values():
       # get move score using UCT (Upper Confidence Bounds to Trees) formula
-      # TODO: 暫時先註解掉下面那一行，應該用不到
+      # FIXME: 暫時先註解掉下面那一行，應該用不到
       # current_player = child_node.board.current_player
-      # TODO: 可能會有 bug，畢竟有正反方！
+      # FIXME: 可能會有 bug，畢竟有正反方！
       # move_score = current_player * child_node.score / child_node.visits + \
       #   exploration_constant * math.sqrt(math.log(node.visits / child_node.visits))
       move_score = child_node.score / child_node.visits + \
@@ -160,7 +160,7 @@ class MCTS():
         best_moves.append(child_node)
 
     # return one of the best moves randomly
-    # TODO: not sure it's really random or not
+    # FIXME: not sure it's really random or not
     # the_node = random.choice(best_moves)
     length = len(best_moves)
     if length > 1:
