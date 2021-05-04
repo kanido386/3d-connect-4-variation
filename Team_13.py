@@ -160,11 +160,11 @@ class Board():
     if total == 4:
       self.line_home += 1
       # TODO: 更改參數
-      self.score_home += 30
+      self.score_home += 62
     elif total == -4:
       self.line_away += 1
       # TODO: 更改參數
-      self.score_away += 30
+      self.score_away += 62
 
 
   def count_point(self):
@@ -296,6 +296,25 @@ class MCTS():
   # search for the best move in the current position
   def search(self, initial_state):
 
+    self.initial_state = initial_state
+
+    # line is the most important!
+    for i in range(1, 25):  # cell 1~24
+    
+      next_state = initial_state.move(i)
+      initial_state.count_point()
+      next_state.count_point()
+      # TODO: may have bug (not sure is home or away)
+      if next_state.line_away > initial_state.line_away:
+        return i
+
+      next_next_state = initial_state.move((i+5)%24+1).move(i)
+      next_next_state.count_point()
+      # TODO: may have bug (not sure is home or away)
+      if next_next_state.line_away > initial_state.line_away:
+        return i
+    
+
     start_time = time.time()
     # print(start_time)
 
@@ -312,7 +331,7 @@ class MCTS():
     self.root = TreeNode(initial_state, None, None)
 
     # TODO: modify iteration number (the larger, the better, but slower)
-    for iteration in range(500):
+    for iteration in range(11):
 
       current_time = time.time()
       elapse_time = current_time - start_time
@@ -334,6 +353,11 @@ class MCTS():
 
   # select most promising node
   def select(self, node):
+
+    # Don't know what it means, just preventing for crash...
+    if node == None:
+      node = TreeNode(self.initial_state, None, None)
+      
     while not node.is_terminal:
       if node.is_fully_expanded:
         node, cell = self.get_best_move(node, 2)
@@ -509,7 +533,7 @@ def GetStep(board, is_black):
 
     # Translate to (row, col) according to the spec
     the_position = map_24_to_36(best_move)
-    row = the_position / 6
+    row = the_position // 6
     col = the_position % 6
 
     return (row, col)
