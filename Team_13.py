@@ -1,3 +1,8 @@
+##########################################
+#                                        #
+#   Team 13 - ni hao     0616082 林彥廷   #
+#                                        #
+##########################################
 
 import STcpClient
 import random
@@ -298,21 +303,59 @@ class MCTS():
 
     self.initial_state = initial_state
 
+    # # line is the most important! (old version)
+    # for i in range(1, 25):  # cell 1~24
+    
+    #   next_state = initial_state.move(i)
+    #   initial_state.count_point()
+    #   next_state.count_point()
+    #   # TODO: may have bug (not sure is home or away)
+    #   if next_state.line_away > initial_state.line_away:
+    #     return i
+
+    #   next_next_state = initial_state.move((i+5)%24+1).move(i)
+    #   next_next_state.count_point()
+    #   # TODO: may have bug (not sure is home or away)
+    #   if next_next_state.line_away > initial_state.line_away:
+    #     return i
+
+
     # line is the most important!
+    initial_state.count_point()
+    current_max = initial_state.line_away
+    the_cell = 1
+    flag = False
+
     for i in range(1, 25):  # cell 1~24
     
       next_state = initial_state.move(i)
-      initial_state.count_point()
       next_state.count_point()
       # TODO: may have bug (not sure is home or away)
-      if next_state.line_away > initial_state.line_away:
-        return i
+      if next_state.line_away > current_max:
+        current_max = next_state.line_away
+        the_cell = i
+        flag = True
+      
+    if flag:
+      return the_cell
+
+    
+    current_max = initial_state.line_away
+    the_cell = 1
+    flag = False
+
+    for i in range(1, 25):  # cell 1~24
 
       next_next_state = initial_state.move((i+5)%24+1).move(i)
       next_next_state.count_point()
       # TODO: may have bug (not sure is home or away)
       if next_next_state.line_away > initial_state.line_away:
-        return i
+        current_max = next_next_state.line_away
+        the_cell = i
+        flag = True
+
+    if flag:
+      return the_cell
     
 
     start_time = time.time()
