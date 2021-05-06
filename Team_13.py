@@ -349,7 +349,7 @@ class MCTS():
       next_next_state = initial_state.move((i+5)%24+1).move(i)
       next_next_state.count_point()
       # TODO: may have bug (not sure is home or away)
-      if next_next_state.line_away > initial_state.line_away:
+      if next_next_state.line_away > current_max:
         current_max = next_next_state.line_away
         the_cell = i
         flag = True
